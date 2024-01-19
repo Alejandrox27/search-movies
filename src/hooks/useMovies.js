@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { searchMovies } from "../services/movies";
 
-export function useMovies ({ search }){
+export function useMovies ({ search, sort }){
     const [responseMovies, setResponseMovies] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ export function useMovies ({ search }){
         if (previousSearch.current === search){
           return;
         }
-        lastMovie.current = search;
+        previousSearch.current = search;
         setLoading(true);
         const movieData = await searchMovies({search});
         if(movieData.lastMovie) return;
@@ -23,8 +23,13 @@ export function useMovies ({ search }){
         setLoading(false);
       }
     }
-  
-    return {movies: responseMovies, getMovies, loading, error};
+    const sortedMovies = useMemo(() => {
+      return sort
+    ? [...responseMovies].sort((a,b) => a.title.localeCompare(b.title))
+    : responseMovies
+}, [sort, responseMovies])
+
+    return {movies: sortedMovies, getMovies, loading, error};
   };
 
 export default useMovies;

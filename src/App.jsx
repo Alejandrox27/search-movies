@@ -38,21 +38,23 @@ function useSearch(){
 }
 
 function App() {
+  const [sort, setSort] = useState(false);
   const {search, updateSearch, error} = useSearch();
-  const {movies, getMovies, loading, error: fetchError} = useMovies({ search })
+  const {movies, getMovies, loading, error: fetchError} = useMovies({ search, sort })
   const hasMovies = movies?.length > 0
 
   const handleSubmit = (e) => {
     e.preventDefault();
     getMovies();
-    
   };
+
+  const handleSort = () => {
+    setSort(!sort);
+  }
 
   const handleChange = (e) => {
     updateSearch(e.target.value);
   }
-
-  
 
   return (
     <>
@@ -70,6 +72,7 @@ function App() {
           autoComplete='off' 
           onChange={handleChange}
           name='movieTitle' />
+          <input type="checkbox" onChange={handleSort} checked={sort} />
           <button type='submit' disabled={error && true}>Search</button>
         </form>
         {

@@ -1,5 +1,4 @@
 const RenderMovies = ({movies}) => {
-  console.log(movies);
     return (
         <ul className="movies">
           {
