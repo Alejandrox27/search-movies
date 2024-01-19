@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { CircularProgress } from '@mui/material';
 import RenderMovies from './components/Movies'
 import useMovies from './hooks/useMovies'
+import debounce from 'just-debounce-it'
 import './App.css'
-import { CircularProgress } from '@mui/material';
 
 function useSearch(){
   const [search, updateSearch] = useState('');
@@ -43,6 +44,10 @@ function App() {
   const {movies, getMovies, loading, error: fetchError} = useMovies({ search, sort })
   const hasMovies = movies?.length > 0
 
+  const debouncedGetMovies = useCallback(debounce(search => {
+    getMovies({search})
+  }, 500), [])
+
   const handleSubmit = (e) => {
     e.preventDefault();
     getMovies({search});
@@ -55,7 +60,7 @@ function App() {
   const handleChange = (e) => {
     const newSearch = e.target.value;
     updateSearch(newSearch)
-    getMovies({search: newSearch})
+    debouncedGetMovies(newSearch)
   }
 
   return (
