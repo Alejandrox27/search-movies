@@ -1,5 +1,11 @@
 export const searchMovies = async({ search }) => {
     if (search === '') return null
+
+    if (search.length < 3) return null
+      
+      if(search === '') return null
+      
+      if (search.match(/^\d+$/)) return null
         try{
             if(search){
                 const response = await fetch(`https://www.omdbapi.com/?apikey=4287ad07&s=${search}`)
